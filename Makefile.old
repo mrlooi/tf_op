@@ -1,0 +1,17 @@
+TF_DIR=/usr/local/lib/python2.7/dist-packages/tensorflow
+TF_INC_DIR=$(TF_DIR)/include
+
+CUDA_DIR=/usr/local/cuda-8.0
+CUDA_INC_DIR=$(CUDA_DIR)/include
+CUDA_LIB_DIR=$(CUDA_DIR)/lib64
+
+CXXFLAGS=-I. -I $(TF_INC_DIR) -I $(TF_INC_DIR)/external/nsync/public -I $(CUDA_INC_DIR)
+LIBFLAGS=-L $(CUDA_LIB_DIR) -lcudart -lcublas -L $(TF_DIR) -ltensorflow_framework
+
+
+%: %.cc %.cu.cc
+	nvcc -w -Wno-deprecated-gpu-targets -std=c++11 -c -o $@.cu.o $(word 2,$^) $(CXXFLAGS) -x cu -Xcompiler -fPIC
+	g++ -w -std=c++11 -shared -o $@.so $< $@.cu.o -fPIC $(CXXFLAGS) $(LIBFLAGS) -O2 
+
+clean:
+	rm *.so
