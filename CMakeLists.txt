@@ -36,6 +36,9 @@ add_library(tf_op_test2 SHARED src/tf_op_test2.cc)
 target_link_libraries(tf_op_test2 tf_op_test2_cu)
 
 
-cuda_add_library(dot_product_op_cu SHARED src/dot_product_op.cu) 
 add_library(dot_product_op SHARED src/dot_product_op.cc)
+cuda_add_library(dot_product_op_cu SHARED src/dot_product_op.cu) 
 target_link_libraries(dot_product_op dot_product_op_cu)
+
+add_library(dot_product_grad_op SHARED src/dot_product_grad_op.cc)
+target_link_libraries(dot_product_grad_op dot_product_op_cu)

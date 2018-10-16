@@ -9,11 +9,12 @@ using CPUDevice = Eigen::ThreadPoolDevice;
 using GPUDevice = Eigen::GpuDevice;
 
 static const char* OP_NAME = "DotProductOp";
+static const char *OP_GRAD_NAME = "DotProductGradOp";
 
 REGISTER_OP(OP_NAME)
-    .Input("input: float")
-    .Input("weights: float")
-    .Output("inner_product: float");
+    .Input("input1: float")
+    .Input("input2: float")
+    .Output("dot_product: float");
 
 void check_dot_product_op_input(OpKernelContext *context)
 {
