@@ -13,6 +13,11 @@ using GPUDevice = Eigen::GpuDevice;
     for (int i = blockIdx.x * blockDim.x + threadIdx.x; i < n; \
          i += blockDim.x * gridDim.x)
 
+static inline int divUp(int total, int grain)
+{
+    return (total + grain - 1) / grain;
+}
+
 // Define the CUDA kernel.
 template <typename T>
 __global__ void MatMulKernel(const int rows, const int cols, const T *tensor1, const T *tensor2, T *tensor_out)
@@ -60,7 +65,7 @@ void DotProductGPU(int rows, int cols, const float *tensor1, const float *tensor
     int maxThreadsPerBlock = 1024;
     int size = rows * cols;
     dim3 threadsPerBlock(maxThreadsPerBlock, 1, 1);
-    int grid_size = std::min((size + maxThreadsPerBlock - 1) / maxThreadsPerBlock, 2147483647 ); // checked from deviceQuery
+    int grid_size = std::min(divUp(size, maxThreadsPerBlock), 2147483647); // checked from deviceQuery    
     dim3 blocksPerGrid(grid_size, 1, 1);
 
     MatMulKernel<float><<<blocksPerGrid, threadsPerBlock, 0, d.stream()>>>(rows, cols, tensor1, tensor2, tensor_out);
@@ -72,7 +77,8 @@ void DotProductGradGPU(int rows, int cols, const float *tensor1, const float *te
     int maxThreadsPerBlock = 1024;
     int size = rows * cols;
     dim3 threadsPerBlock(maxThreadsPerBlock, 1, 1);
-    int grid_size = std::min((size + maxThreadsPerBlock - 1) / maxThreadsPerBlock, 2147483647); // checked from deviceQuery
+
+    int grid_size = std::min(divUp(size, maxThreadsPerBlock), 2147483647); // checked from deviceQuery
     dim3 blocksPerGrid(grid_size, 1, 1);
 
     MatMulBackwardKernel<float><<<blocksPerGrid, threadsPerBlock, 0, d.stream()>>>(rows, cols, tensor1, tensor2, gradients, grad_tensor1, grad_tensor2);
