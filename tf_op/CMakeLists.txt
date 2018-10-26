@@ -9,12 +9,15 @@ if (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 5.0 OR CMAKE_CXX_COMPILER_VERSION
   set(CMAKE_CXX_FLAGS "-D_GLIBCXX_USE_CXX11_ABI=0 ${CMAKE_CXX_FLAGS}")
 endif()
 
-set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS} -std=c++11 --expt-relaxed-constexpr)
+set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS} --expt-relaxed-constexpr)
 
 # get tensorflow include dirs, see https://www.tensorflow.org/how_tos/adding_an_op/
 execute_process(COMMAND python -c "import tensorflow; print(tensorflow.sysconfig.get_include())" OUTPUT_VARIABLE Tensorflow_INCLUDE_DIRS)
 execute_process(COMMAND python -c "import tensorflow; print(tensorflow.sysconfig.get_lib())" OUTPUT_VARIABLE Tensorflow_LIBRARY_DIRS)
 set(Tensorflow_LIBRARIES "tensorflow_framework")
+
+string(REGEX REPLACE "\n$" "" Tensorflow_INCLUDE_DIRS "${Tensorflow_INCLUDE_DIRS}")
+string(REGEX REPLACE "\n$" "" Tensorflow_LIBRARY_DIRS "${Tensorflow_LIBRARY_DIRS}")
 
 # print
 message(${Tensorflow_INCLUDE_DIRS})
@@ -24,8 +27,12 @@ message(${Tensorflow_LIBRARY_DIRS})
 include_directories(include)
 include_directories(${Tensorflow_INCLUDE_DIRS})
 
+set(TF_NSYNC_INC ${Tensorflow_INCLUDE_DIRS} "/external/nsync/public")
+include_directories(${TF_NSYNC_INC})
+message(${TF_NSYNC_INC})
+
 # links
-link_directories("/usr/local/lib/python2.7/dist-packages/tensorflow")
+link_directories(${Tensorflow_LIBRARY_DIRS})
 link_libraries(${Tensorflow_LIBRARIES})
 
 # BUILD LIBS
