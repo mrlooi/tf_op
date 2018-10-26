@@ -11,10 +11,17 @@ class MyNetwork(nn.Module):
     def forward(self, input1, input2):
         return self.add(input1, input2)
 
-model = MyNetwork().cuda()
+USE_CUDA = 1
+model = MyNetwork()
+if USE_CUDA:
+    model.cuda()
 
 x = np.arange(25).reshape((5,5))
 x2 = x * 2
 input1, input2 = torch.FloatTensor(x), torch.FloatTensor(x2)
-print(model(input1.cuda(), input2.cuda()))
+
+if USE_CUDA:
+    input1 = input1.cuda()
+    input2 = input2.cuda()
+print(model(input1, input2))
 print(input1 + input2)
