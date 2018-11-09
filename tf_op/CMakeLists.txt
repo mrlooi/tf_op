@@ -49,3 +49,5 @@ target_link_libraries(dot_product_op dot_product_op_cu)
 
 add_library(dot_product_grad_op SHARED src/dot_product_grad_op.cc)
 target_link_libraries(dot_product_grad_op dot_product_op_cu)
+
+add_library(roi_pooling_op SHARED src/roi_pooling_op.cc)
