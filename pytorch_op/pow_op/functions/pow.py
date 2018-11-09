@@ -30,7 +30,8 @@ class PowFunction(Function):
         """
         print("BACKWARD")
         print(grad_output)
-        return grad_output.clone(), grad_output.clone()
-        # grad_input = torch.FloatTensor()
-        # my_lib.pow_backward(grad_output, grad_input)
-        # return grad_input
+        grad_input1 = self.input1.new(*self.input1.size()).zero_()
+        grad_input2 = self.input2.new(*self.input2.size()).zero_()
+        my_lib.pow_backward(grad_output, self.input1, self.input2, grad_input1, grad_input2)
+        return grad_input1, grad_input2
+
