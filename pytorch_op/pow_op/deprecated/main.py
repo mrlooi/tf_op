@@ -11,17 +11,16 @@ x2 = np.array([3,4])
 input1, input2 = FT(x), FT(x2)
 
 pow_op = PowFunction()
+pow_m = PowModule()
 
 # v1 = input1 * 2
-x = pow_op(input1, input2)
+x = pow_m(input1, input2)
 x *= 3
 # x = torch.pow(x, 2)
 x.sum().backward()
 print(input1.grad)
 print(input2.grad)
-# print(torch.pow(input1, input2))
-# pow_op.backward()
-# z = PowFunction.apply(input1, input2)
+
 
 input1.grad.zero_()
 input2.grad.zero_()
