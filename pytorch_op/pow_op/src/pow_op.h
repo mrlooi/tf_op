@@ -1,2 +1,2 @@
 int pow_forward(THFloatTensor *input1, THFloatTensor *input2, THFloatTensor *output);
-int pow_backward(THFloatTensor *grad_output, THFloatTensor *grad_input);
+int pow_backward(THFloatTensor* grad_output, THFloatTensor* input1, THFloatTensor* input2, THFloatTensor *grad_input1, THFloatTensor *grad_input2);

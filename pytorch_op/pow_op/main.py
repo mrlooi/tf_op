@@ -7,12 +7,28 @@ def FT(x):
 	return torch.tensor(x, dtype=torch.float32, requires_grad=True)
 
 x = np.array([4,3])
-x2 = np.array([2,3])
+x2 = np.array([3,4])
 input1, input2 = FT(x), FT(x2)
 
 pow_op = PowFunction()
+
+# v1 = input1 * 2
 x = pow_op(input1, input2)
+x *= 3
+# x = torch.pow(x, 2)
 x.sum().backward()
+print(input1.grad)
+print(input2.grad)
 # print(torch.pow(input1, input2))
 # pow_op.backward()
 # z = PowFunction.apply(input1, input2)
+
+input1.grad.zero_()
+input2.grad.zero_()
+
+# v1 = input1 * 2
+x = torch.pow(input1, input2)
+x *= 3
+x.sum().backward()
+print(input1.grad)
+print(input2.grad)
